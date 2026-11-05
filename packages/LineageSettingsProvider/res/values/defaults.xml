@@ -76,4 +76,7 @@
     <!-- Default for Settings.Global.DISABLE_WINDOW_BLURS -->
     <integer name="def_disable_window_blurs">0</integer>
 
+
+    <!-- DriftVaneOS: pure black dark theme by default -->
+    <bool name="def_berry_black_theme">true</bool>
 </resources>
