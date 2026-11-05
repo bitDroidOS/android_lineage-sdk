@@ -460,6 +460,29 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
             } catch (Exception e) {
                 Log.w(TAG, "couldn't set lock screen media default", e);
             }
+
+            // DriftVaneOS: Smooth display on by default (same value the
+            // Settings toggle writes: Infinity = highest refresh rate)
+            try {
+                Settings.System.putFloat(mContext.getContentResolver(),
+                        Settings.System.PEAK_REFRESH_RATE, Float.POSITIVE_INFINITY);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set smooth display default", e);
+            }
+
+            // DriftVaneOS: most colorful Material You style (Vibrant) by default.
+            // Only when nothing is set yet, so it never overrides a user's pick.
+            try {
+                final String themeKey = "theme_customization_overlay_packages";
+                final String cur = Settings.Secure.getString(
+                        mContext.getContentResolver(), themeKey);
+                if (cur == null || cur.isEmpty() || cur.equals("{}")) {
+                    Settings.Secure.putString(mContext.getContentResolver(), themeKey,
+                            "{\"android.theme.customization.theme_style\":\"VIBRANT\"}");
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set theme style default", e);
+            }
         } finally {
             if (stmt != null) stmt.close();
         }
