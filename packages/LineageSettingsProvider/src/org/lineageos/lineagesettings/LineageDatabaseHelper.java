@@ -442,8 +442,12 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
             loadBooleanSetting(stmt, LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
                     R.bool.def_volume_panel_on_left);
 
-            loadBooleanSetting(stmt, LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
-                    R.bool.def_qs_show_brightness_slider);
+            // DriftVaneOS: brightness slider always shown (2), at the bottom of QS (1)
+            loadIntegerSetting(stmt, LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
+                    R.integer.def_qs_show_brightness_slider_mode);
+
+            loadIntegerSetting(stmt, LineageSettings.Secure.QS_BRIGHTNESS_SLIDER_POSITION,
+                    R.integer.def_qs_brightness_slider_position);
 
             loadBooleanSetting(stmt, LineageSettings.Secure.BERRY_BLACK_THEME,
                     R.bool.def_berry_black_theme);

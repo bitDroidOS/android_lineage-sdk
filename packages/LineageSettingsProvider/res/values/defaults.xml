@@ -79,4 +79,9 @@
 
     <!-- DriftVaneOS: pure black dark theme by default -->
     <bool name="def_berry_black_theme">true</bool>
+
+    <!-- DriftVaneOS: QS brightness slider 0 = never, 1 = when expanded, 2 = always -->
+    <integer name="def_qs_show_brightness_slider_mode">2</integer>
+    <!-- DriftVaneOS: QS brightness slider 0 = top, 1 = bottom -->
+    <integer name="def_qs_brightness_slider_position">1</integer>
 </resources>
