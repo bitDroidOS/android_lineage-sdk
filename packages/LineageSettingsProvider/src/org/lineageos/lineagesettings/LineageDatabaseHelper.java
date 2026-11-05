@@ -442,7 +442,7 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
             loadBooleanSetting(stmt, LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
                     R.bool.def_volume_panel_on_left);
 
-            // DriftVaneOS: brightness slider always shown (2), at the bottom of QS (1)
+            // DriftVaneOS: brightness slider always shown (2), at the top of QS (0)
             loadIntegerSetting(stmt, LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
                     R.integer.def_qs_show_brightness_slider_mode);
 
@@ -470,7 +470,9 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
                 Log.w(TAG, "couldn't set smooth display default", e);
             }
 
-            // DriftVaneOS: most colorful Material You style (Vibrant) by default.
+            // DriftVaneOS: blue by default, in the most colorful Material You style (Vibrant).
+            // Same format Android uses for a preset color picked in Wallpaper & style, so
+            // picking another color or "Wallpaper colors" there works as normal.
             // Only when nothing is set yet, so it never overrides a user's pick.
             try {
                 final String themeKey = "theme_customization_overlay_packages";
@@ -478,7 +480,10 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
                         mContext.getContentResolver(), themeKey);
                 if (cur == null || cur.isEmpty() || cur.equals("{}")) {
                     Settings.Secure.putString(mContext.getContentResolver(), themeKey,
-                            "{\"android.theme.customization.theme_style\":\"VIBRANT\"}");
+                            "{\"android.theme.customization.theme_style\":\"VIBRANT\","
+                            + "\"android.theme.customization.color_source\":\"preset\","
+                            + "\"android.theme.customization.system_palette\":\"2F6BFF\","
+                            + "\"android.theme.customization.accent_color\":\"2F6BFF\"}");
                 }
             } catch (Exception e) {
                 Log.w(TAG, "couldn't set theme style default", e);
