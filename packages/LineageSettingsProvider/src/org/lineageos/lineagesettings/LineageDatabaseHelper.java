@@ -451,6 +451,15 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
 
             loadBooleanSetting(stmt, LineageSettings.Secure.BERRY_BLACK_THEME,
                     R.bool.def_berry_black_theme);
+
+            // DriftVaneOS: no AOSP media player on the lock screen by default
+            // (the dynamic bar's media pill shows what's playing instead)
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        "media_controls_lock_screen", 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set lock screen media default", e);
+            }
         } finally {
             if (stmt != null) stmt.close();
         }
