@@ -477,6 +477,14 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
                 Log.w(TAG, "couldn't turn off lock screen widgets", e);
             }
 
+            // DriftVaneOS: small lock screen clock by default ("Dynamic clock" off)
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        "lockscreen_use_double_line_clock", 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set the lock screen clock size default", e);
+            }
+
             // DriftVaneOS: "Outline" volume slider style by default (5, see DriftVane Enhancements)
             try {
                 if (Settings.System.getString(mContext.getContentResolver(), "custom_volume_styles") == null) {
