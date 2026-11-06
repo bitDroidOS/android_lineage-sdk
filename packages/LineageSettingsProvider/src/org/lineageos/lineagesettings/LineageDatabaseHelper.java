@@ -470,6 +470,22 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
                 Log.w(TAG, "couldn't set smooth display default", e);
             }
 
+            // DriftVaneOS: no lock screen widgets (swiping the glance stack shouldn't open them)
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(), "glanceable_hub_enabled", 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't turn off lock screen widgets", e);
+            }
+
+            // DriftVaneOS: "Outline" volume slider style by default (5, see DriftVane Enhancements)
+            try {
+                if (Settings.System.getString(mContext.getContentResolver(), "custom_volume_styles") == null) {
+                    Settings.System.putInt(mContext.getContentResolver(), "custom_volume_styles", 5);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set volume style default", e);
+            }
+
             // DriftVaneOS: blue by default, in the most colorful Material You style (Vibrant).
             // Same format Android uses for a preset color picked in Wallpaper & style, so
             // picking another color or "Wallpaper colors" there works as normal.
