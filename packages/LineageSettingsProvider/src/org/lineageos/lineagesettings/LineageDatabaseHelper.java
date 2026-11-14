@@ -442,8 +442,84 @@ public class LineageDatabaseHelper extends SQLiteOpenHelper{
             loadBooleanSetting(stmt, LineageSettings.Secure.VOLUME_PANEL_ON_LEFT,
                     R.bool.def_volume_panel_on_left);
 
-            loadBooleanSetting(stmt, LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
-                    R.bool.def_qs_show_brightness_slider);
+            // DriftVaneOS: brightness slider always shown (2), at the top of QS (0)
+            loadIntegerSetting(stmt, LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER,
+                    R.integer.def_qs_show_brightness_slider_mode);
+
+            loadIntegerSetting(stmt, LineageSettings.Secure.QS_BRIGHTNESS_SLIDER_POSITION,
+                    R.integer.def_qs_brightness_slider_position);
+
+            loadBooleanSetting(stmt, LineageSettings.Secure.BERRY_BLACK_THEME,
+                    R.bool.def_berry_black_theme);
+
+            // DriftVaneOS: no AOSP media player on the lock screen by default
+            // (the dynamic bar's media pill shows what's playing instead)
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        "media_controls_lock_screen", 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set lock screen media default", e);
+            }
+
+            // DriftVaneOS: Smooth display on by default (same value the
+            // Settings toggle writes: Infinity = highest refresh rate)
+            try {
+                Settings.System.putFloat(mContext.getContentResolver(),
+                        Settings.System.PEAK_REFRESH_RATE, Float.POSITIVE_INFINITY);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set smooth display default", e);
+            }
+
+            // DriftVaneOS: no lock screen widgets (swiping the glance stack shouldn't open them)
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(), "glanceable_hub_enabled", 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't turn off lock screen widgets", e);
+            }
+
+            // DriftVaneOS: big lock screen clock (on its turning cookie) by default
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        "lockscreen_use_double_line_clock", 1);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set the lock screen clock size default", e);
+            }
+
+            // DriftVaneOS: lock screen notifications off by default
+            try {
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.LOCK_SCREEN_SHOW_NOTIFICATIONS, 0);
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set lock screen notifications default", e);
+            }
+
+            // DriftVaneOS: "Outline" volume slider style by default (5, see DriftVane Enhancements)
+            try {
+                if (Settings.System.getString(mContext.getContentResolver(), "custom_volume_styles") == null) {
+                    Settings.System.putInt(mContext.getContentResolver(), "custom_volume_styles", 5);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set volume style default", e);
+            }
+
+            // DriftVaneOS: blue by default, in the most colorful Material You style (Vibrant).
+            // Same format Android uses for a preset color picked in Wallpaper & style, so
+            // picking another color or "Wallpaper colors" there works as normal.
+            // Only when nothing is set yet, so it never overrides a user's pick.
+            try {
+                final String themeKey = "theme_customization_overlay_packages";
+                final String cur = Settings.Secure.getString(
+                        mContext.getContentResolver(), themeKey);
+                if (cur == null || cur.isEmpty() || cur.equals("{}")) {
+                    Settings.Secure.putString(mContext.getContentResolver(), themeKey,
+                            "{\"android.theme.customization.theme_style\":\"VIBRANT\","
+                            + "\"android.theme.customization.color_source\":\"preset\","
+                            + "\"android.theme.customization.system_palette\":\"2F6BFF\","
+                            + "\"android.theme.customization.accent_color\":\"2F6BFF\"}");
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "couldn't set theme style default", e);
+            }
         } finally {
             if (stmt != null) stmt.close();
         }
